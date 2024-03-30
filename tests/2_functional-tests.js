@@ -65,7 +65,7 @@ suite("Functional Tests", function () {
       })
       .end(function (err, res) {
         assert.equal(res.status, 200);
-        assert.equal(res.text, "missing inputs");
+        assert.equal(res.body.error, "required field(s) missing");
         done();
       });
   });
@@ -114,7 +114,7 @@ suite("Functional Tests", function () {
       .send({ _id: "1", issue_title: "Updated Title" })
       .end(function (err, res) {
         assert.equal(res.status, 200);
-        assert.equal(res.text, "successfully updated");
+        assert.equal(res.body.result, "successfully updated");
         done();
       });
   });
@@ -131,7 +131,7 @@ suite("Functional Tests", function () {
       })
       .end(function (err, res) {
         assert.equal(res.status, 200);
-        assert.equal(res.text, "successfully updated");
+        assert.equal(res.body.result, "successfully updated");
         done();
       });
   });
@@ -144,7 +144,7 @@ suite("Functional Tests", function () {
       .send({ issue_title: "Updated Title" })
       .end(function (err, res) {
         assert.equal(res.status, 200);
-        assert.equal(res.text, "missing _id");
+        assert.equal(res.body.error, "missing _id");
         done();
       });
   });
@@ -157,7 +157,10 @@ suite("Functional Tests", function () {
       .send({ _id: "1" })
       .end(function (err, res) {
         assert.equal(res.status, 200);
-        assert.equal(res.text, "no updated field sent");
+        assert.deepEqual(res.body, {
+          error: "no update field(s) sent",
+          _id: "1",
+        });
         done();
       });
   });
@@ -170,7 +173,10 @@ suite("Functional Tests", function () {
       .send({ _id: "invalid_id", issue_title: "Updated Title" })
       .end(function (err, res) {
         assert.equal(res.status, 200);
-        assert.equal(res.text, "invalid _id");
+        assert.deepEqual(res.body, {
+          error: "could not update",
+          _id: "invalid_id",
+        });
         done();
       });
   });
@@ -183,7 +189,7 @@ suite("Functional Tests", function () {
       .send({ _id: "1" })
       .end(function (err, res) {
         assert.equal(res.status, 200);
-        assert.equal(res.text, "deleted 1");
+        assert.equal(res.body.result, "successfully deleted");
         done();
       });
   });
@@ -196,7 +202,7 @@ suite("Functional Tests", function () {
       .send({ _id: "invalid_id" })
       .end(function (err, res) {
         assert.equal(res.status, 200);
-        assert.equal(res.text, "invalid _id");
+        assert.equal(res.body.error, "could not delete");
         done();
       });
   });
@@ -209,7 +215,39 @@ suite("Functional Tests", function () {
       .send({})
       .end(function (err, res) {
         assert.equal(res.status, 200);
-        assert.equal(res.text, "missing _id");
+        assert.equal(res.body.error, "missing _id");
+        done();
+      });
+  });
+
+  //Update an issue with an invalid field: PUT request to /api/issues/{project}
+  test("Update an issue with an invalid field", function (done) {
+    chai
+      .request(server)
+      .put("/api/issues/apitest")
+      .send({ _id: "2", invalid_field: "invalid" })
+      .end(function (err, res) {
+        assert.equal(res.status, 200);
+        assert.deepEqual(res.body, {
+          error: "could not update",
+          _id: "2",
+        });
+        done();
+      });
+  });
+
+  //Bad Id Update: PUT request to /api/issues/{project}
+  test("Bad Id Update", function (done) {
+    chai
+      .request(server)
+      .put("/api/issues/apitest")
+      .send({ _id: "invalid_id", issue_title: "Updated Title" })
+      .end(function (err, res) {
+        assert.equal(res.status, 200);
+        assert.deepEqual(res.body, {
+          error: "could not update",
+          _id: "invalid_id",
+        });
         done();
       });
   });

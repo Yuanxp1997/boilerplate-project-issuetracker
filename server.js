@@ -14,12 +14,27 @@ const issues = {
   test: [
     {
       _id: "1",
-      issue_title: "Title",
-      issue_text: "text",
-      created_by: "Functional Test - Every field filled in",
-      assigned_to: "Chai and Mocha",
-      status_text: "In QA",
+      issue_title: "Fix error in posting data",
+      issue_text: "When we post data it has an error.",
+      created_on: "2017-01-08T06:35:14.240Z",
+      updated_on: "2017-01-08T06:35:14.240Z",
+      created_by: "Joe",
+      assigned_to: "Joe",
       open: true,
+      status_text: "In QA",
+    },
+  ],
+  apitest: [
+    {
+      _id: "2",
+      issue_title: "Fix error in posting data",
+      issue_text: "When we post data it has an error.",
+      created_on: "2017-01-08T06:35:14.240Z",
+      updated_on: "2017-01-08T06:35:14.240Z",
+      created_by: "Joe",
+      assigned_to: "Joe",
+      open: true,
+      status_text: "In QA",
     },
   ],
 };
